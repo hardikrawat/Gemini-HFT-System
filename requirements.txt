@@ -1,0 +1,26 @@
+# Gemini HFT System - Dependencies
+# =================================
+# Install with: pip install -r requirements.txt
+
+# Core Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Market Data
+yfinance>=0.2.30
+
+# Technical Analysis
+ta>=0.11.0
+
+# Machine Learning
+xgboost>=2.0.0
+scikit-learn>=1.3.0
+
+# Database (Turso/LibSQL)
+libsql-experimental>=0.0.30
+
+# AI (Gemini)
+google-generativeai>=0.3.0
+
+# Environment Management
+python-dotenv>=1.0.0
