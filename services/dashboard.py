@@ -79,6 +79,19 @@ def stop_services(processes):
     print("\nSystem Shutdown Complete")
 
 
+def load_signal():
+    """Load trade signal from JSON."""
+    import json
+    signal_file = Path(__file__).parent.parent / 'trade_signal.json'
+    if not signal_file.exists():
+        return None
+    try:
+        with open(signal_file, 'r') as f:
+            return json.load(f)
+    except:
+        return None
+
+
 def display_dashboard(processes, db):
     """Display real-time dashboard."""
     clear_screen()
@@ -87,6 +100,7 @@ def display_dashboard(processes, db):
     prices = db.get_latest_prices(limit=1)
     portfolio = db.get_portfolio()
     manager = db.get_manager_status_full()
+    signal = load_signal()
     
     price = float(prices.iloc[-1]['price']) if not prices.empty else 0
     balance = portfolio['balance']
@@ -106,6 +120,18 @@ def display_dashboard(processes, db):
     print(f"  Symbol:  {config.SYMBOL}")
     print(f"  Price:   ₹{price:,.2f}")
     print("-" * 60)
+    
+    # AI Signal
+    if signal:
+        confidence = signal.get('confidence', 0)
+        sig_type = signal.get('signal', 'N/A')
+        rsi = signal.get('rsi', 0)
+        print(f"  Signal:     {sig_type} ({confidence:.1%} confidence)")
+        print(f"  RSI:        {rsi:.1f}")
+    else:
+        print(f"  Signal:     Waiting...")
+    print("-" * 60)
+    
     print(f"  Balance:    ₹{balance:,.2f}")
     print(f"  Positions:  {positions}")
     print(f"  Net Worth:  ₹{total_value:,.2f}")
