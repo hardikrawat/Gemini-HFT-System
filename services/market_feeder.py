@@ -5,6 +5,12 @@ Market Feeder - Service 1: Data Pipeline
 Fetches live market data and stores in Turso database.
 """
 
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 import time
 from datetime import datetime
 

@@ -5,6 +5,12 @@ Gemini Manager - Service 4: AI Risk Controller
 Uses Gemini AI for risk analysis and trading control.
 """
 
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 import re
 import json
 import time
