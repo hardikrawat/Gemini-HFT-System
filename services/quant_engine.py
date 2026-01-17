@@ -5,6 +5,12 @@ Quant Engine - Service 2: AI Brain
 XGBoost model for price prediction with RSI/SMA features.
 """
 
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 import json
 import time
 from datetime import datetime

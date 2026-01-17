@@ -5,6 +5,12 @@ Execution Engine - Service 3: Trade Executor
 Paper trading execution with portfolio management.
 """
 
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 import json
 import time
 import os
