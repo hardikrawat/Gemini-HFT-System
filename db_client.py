@@ -222,6 +222,62 @@ class TradingDB:
             print(f"[DB ERROR] set_manager_status: {e}")
             return False
     
+    def reset_db(self, confirm: bool = False) -> bool:
+        """
+        Reset all database tables to initial state.
+        WARNING: This will DELETE ALL DATA.
+        
+        Args:
+            confirm: Must be True to execute (safety check)
+            
+        Returns:
+            True if successful
+        """
+        if not confirm:
+            print("[RESET] Safety check failed. Call with confirm=True to proceed.")
+            return False
+        
+        try:
+            print("[RESET] Clearing all tables...")
+            
+            # Delete all data from tables
+            self.conn.execute("DELETE FROM market_data")
+            self.conn.execute("DELETE FROM trade_logs")
+            self.conn.execute("DELETE FROM portfolio")
+            self.conn.execute("DELETE FROM manager_status")
+            
+            # Reset auto-increment counters
+            self.conn.execute("DELETE FROM sqlite_sequence WHERE name='market_data'")
+            self.conn.execute("DELETE FROM sqlite_sequence WHERE name='trade_logs'")
+            
+            # Reinitialize with defaults
+            self.conn.execute(
+                "INSERT INTO portfolio (id, balance, positions) VALUES (1, ?, 0)",
+                (config.INITIAL_BALANCE,)
+            )
+            self.conn.execute(
+                "INSERT INTO manager_status (id, action, timestamp) VALUES (1, 'CONTINUE', ?)",
+                (datetime.now().strftime('%Y-%m-%d %H:%M:%S'),)
+            )
+            
+            self.conn.commit()
+            
+            # Sync to remote Turso database
+            try:
+                self.conn.sync()
+                print("[RESET] Synced to remote database")
+            except Exception as sync_err:
+                print(f"[RESET] Sync warning: {sync_err}")
+            
+            print(f"[RESET] Database reset complete!")
+            print(f"[RESET] Portfolio: ₹{config.INITIAL_BALANCE:,.2f} | Positions: 0")
+            print(f"[RESET] Manager Status: CONTINUE")
+            return True
+            
+        except Exception as e:
+            print(f"[DB ERROR] reset_db: {e}")
+            return False
+    
     def close(self):
         if self.conn:
             self.conn.close()
