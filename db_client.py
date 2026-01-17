@@ -262,6 +262,13 @@ class TradingDB:
             
             self.conn.commit()
             
+            # Sync to remote Turso database
+            try:
+                self.conn.sync()
+                print("[RESET] Synced to remote database")
+            except Exception as sync_err:
+                print(f"[RESET] Sync warning: {sync_err}")
+            
             print(f"[RESET] Database reset complete!")
             print(f"[RESET] Portfolio: ₹{config.INITIAL_BALANCE:,.2f} | Positions: 0")
             print(f"[RESET] Manager Status: CONTINUE")
